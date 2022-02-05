@@ -1,7 +1,17 @@
 const Mutex = require("async-mutex").Mutex;
 const Delivery = require("../models/Delivery.model");
 const deliveries = [];
-const timeslots = [];
+const timeslots = [
+  {
+    x: "36.9170854",
+    y: "-76.2497906",
+    radius: 7,
+    id: "gubu165",
+    startTime: "Sat Feb 05 2022 16:21:28 GMT+0200",
+    endTime: "Sat Feb 05 2022 21:21:28 GMT+0200",
+    deliveries: [],
+  },
+];
 
 const getAllTodayDeliveries = () => {
   let today = new Date();
@@ -25,22 +35,37 @@ const isDateInThisWeek = (date) => {
   return date >= firstDayOfWeek && date <= lastDayOfWeek;
 };
 exports.bookDelivery = async (req, res) => {
-  if (getAllTodayDeliveries.length > 10) return;
-  const user = req.body.user;
-  const timeslotID = req.body.timeslotId;
-  const mutex = new Mutex();
-  //need to add counter deliveries and to check if it < 10
-  await mutex.runExclusive(async () => {
-    let id = "3454v455r";
-    const timeslotIndex = timeslots.findIndex(
-      (timeslot) => timeslot.id === timeslotID
-    );
-    if (timeslotIndex === -1 || timeslots[timeslotIndex].deliveries.length > 1)
-      return;
-    timeslots[timeslotIndex].deliveries.push(id);
-    const delivery = new Delivery(id, "Pending", timeslots[timeslotIndex]);
-    deliveries = [...deliveries, delivery];
-  });
+  try {
+    if (getAllTodayDeliveries.length > 10) return;
+    const user = req.body.user;
+    const timeslotID = req.body.timeslotId;
+    const mutex = new Mutex();
+    await mutex.runExclusive(async () => {
+      let id = "3454v455r";
+      const timeslotIndex = timeslots.findIndex(
+        (timeslot) => timeslot.id === timeslotID
+      );
+      if (
+        timeslotIndex === -1 ||
+        timeslots[timeslotIndex].deliveries.length > 1
+      ) {
+        throw new Exception("insert diffrent timeslot");
+      }
+      /* Creating a list of timeslots for the day. */
+      timeslots[timeslotIndex].deliveries.push(id);
+      console.log("timeslots", timeslots);
+      // not working
+      const delivery = new Delivery(id, "Pending", timeslots[timeslotIndex]);
+      console.log(delivery, "del");
+
+      deliveries = [...deliveries, delivery];
+      console.log("delivery", delivery);
+      res.send("ok");
+      console.log("ok");
+    });
+  } catch (error) {
+    res.send(error);
+  }
 };
 exports.markDeliveryAsCompleted = (req, res) => {
   try {
