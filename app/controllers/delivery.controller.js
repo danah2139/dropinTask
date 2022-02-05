@@ -1,7 +1,17 @@
 const Mutex = require("async-mutex").Mutex;
 const Delivery = require("../models/Delivery.model");
 const deliveries = [];
-const timeslots = [];
+const timeslots = [
+  {
+    x: "36.9170854",
+    y: "-76.2497906",
+    radius: 7,
+    id: "gubu165",
+    startTime: "Sat Feb 05 2022 16:21:28 GMT+0200",
+    endTime: "Sat Feb 05 2022 16:21:28 GMT+0200",
+    deliveries: [],
+  },
+];
 
 const getAllTodayDeliveries = () => {
   let today = new Date();
@@ -25,12 +35,12 @@ const isDateInThisWeek = (date) => {
   return date >= firstDayOfWeek && date <= lastDayOfWeek;
 };
 exports.bookDelivery = async (req, res) => {
-  if (getAllTodayDeliveries.length > 10) return;
+  if (getAllTodayDeliveries().length > 10) return;
   const user = req.body.user;
   const timeslotID = req.body.timeslotId;
   const mutex = new Mutex();
-  //need to add counter deliveries and to check if it < 10
   await mutex.runExclusive(async () => {
+    console.log("hi");
     let id = "3454v455r";
     const timeslotIndex = timeslots.findIndex(
       (timeslot) => timeslot.id === timeslotID
@@ -40,6 +50,7 @@ exports.bookDelivery = async (req, res) => {
     timeslots[timeslotIndex].deliveries.push(id);
     const delivery = new Delivery(id, "Pending", timeslots[timeslotIndex]);
     deliveries = [...deliveries, delivery];
+    res.send("ok");
   });
 };
 exports.markDeliveryAsCompleted = (req, res) => {
