@@ -53,7 +53,7 @@ exports.bookDelivery = async (req, res) => {
       }
       /* Creating a list of timeslots for the day. */
       timeslots[timeslotIndex].deliveries.push(id);
-      console.log("timeslots", timeslots);
+      // console.log("timeslots", );
       // not working
       const delivery = new Delivery(id, "Pending", timeslots[timeslotIndex]);
       console.log(delivery, "del");

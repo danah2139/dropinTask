@@ -1,12 +1,10 @@
 class Address {
-    constructor(x,y,radius){
-        this.x = x;
-        this.y = y;
-        this.radius =radius; 
+  constructor(x, y, radius) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+  }
 
-    }
-
-    // const get
-
+  // const get
 }
-module.exports = {Address};
+module.exports = { Address };
