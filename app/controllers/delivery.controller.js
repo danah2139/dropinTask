@@ -35,10 +35,10 @@ exports.bookDelivery = async (req, res) => {
       ) {
         throw new Error("please insert new timeslot");
       }
-      db.timeslots[timeslotIndex].deliveries.push(id);
+      db.timeslots[timeslotIndex].deliveries.push(deliveryID);
       const delivery = new Delivery(deliveryID, "Pending", timeslotID, user);
       db.deliveries.push(delivery);
-      res.send({ status: "ok" });
+      res.send({ status: `delievery booked ${deliveryID}` }); //deliveryID => just for testing
     });
   } catch (error) {
     console.log(error, "error");
@@ -48,22 +48,29 @@ exports.bookDelivery = async (req, res) => {
 };
 exports.markDeliveryAsCompleted = (req, res) => {
   try {
-    let delieveryIndex = db.deliveries.findIndex((delivery) => {
-      delivery.deliveryID === req.params.DELIVERY_ID;
-    });
-    if (delieveryIndex !== -1)
-      db.deliveries[delieveryIndex].status = "Completed";
-    res.send("ok");
+    let delieveryIndex = db.deliveries.findIndex(
+      (delivery) => delivery.deliveryID === req.params.DELIVERY_ID
+    );
+    if (delieveryIndex === -1) {
+      throw new Error("delivery not exist");
+    }
+    db.deliveries[delieveryIndex].status = "Completed";
+    console.log("mark", db.deliveries);
+    res.send({ message: "delivery completed" });
+    return;
   } catch (error) {
-    res.send(error);
+    res.status(400).send(error.message);
     return;
   }
 };
 exports.cancelDelivery = async (req, res) => {
   try {
-    let delieveryIndex = db.deliveries.findIndex((delivery) => {
-      delivery.deliveryID === req.params.DELIVERY_ID;
-    });
+    console.log(db.deliveries, db.timeslots);
+    console.log(req.params.DELIVERY_ID, "params");
+    let delieveryIndex = db.deliveries.findIndex(
+      (delivery) => delivery.deliveryID === req.params.DELIVERY_ID
+    );
+    console.log(delieveryIndex);
     if (delieveryIndex === -1) {
       throw new Error("delivery not exist");
     }
@@ -80,6 +87,8 @@ exports.cancelDelivery = async (req, res) => {
       );
       db.deliveries.splice(delieveryIndex, 1);
     });
+    res.send({ message: "delivery canceled" });
+    return;
   } catch (error) {
     res.status(400).send(error.message);
     return;

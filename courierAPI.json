@@ -1,15 +1,15 @@
 {"timeslots":[{
     "lat":"32.0800347",
     "lng":"34.8170598",
-    "radius": 7,
+    "radius": 2,
     "id": "gubu165",
-    "startTime": "mon Feb 07 2022 16:21:28 GMT+0200",
-    "endTime": "mon Feb 07 2022 16:21:28 GMT+0200"
+    "startTime":" 2021-02-08T16:21:28",
+    "endTime": "2021-02-08T16:21:28"
   },{
     "lat": "31.6687885",
     "lng": "34.5742523",
-    "radius": 7,
+    "radius": 1,
     "id": "njnj443",
-    "startTime": "mon Feb 07 2022 16:21:28 GMT+0200",
-    "endTime": "mon Feb 07 2022 16:21:28 GMT+0200"
+    "startTime": "2021-02-07T16:21:28",
+    "endTime": "2021-02-07T16:21:28"
   }]}

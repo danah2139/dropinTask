@@ -18,4 +18,4 @@ class Timeslot {
   }
 }
 
-module.exports = { Timeslot };
+module.exports = Timeslot;

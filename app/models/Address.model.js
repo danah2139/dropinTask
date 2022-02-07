@@ -5,4 +5,4 @@ class Address {
     this.lng = lng;
   }
 }
-module.exports = { Address };
+module.exports = Address;

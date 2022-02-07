@@ -1,8 +1,8 @@
 const db = require("../models/index");
 
 const isAddressInDistance = (address, clientAddress) => {
-  let a = address.x - clientAddress.x;
-  let b = address.y - clientAddress.y;
+  let a = address.lng - clientAddress.lng;
+  let b = address.lat - clientAddress.lat;
   return Math.sqrt(a * a + b * b) < address.radius;
 };
 
@@ -12,17 +12,18 @@ exports.findAllAvailableTimeslots = (req, res) => {
     if (!clientAddress) {
       throw Error("must contain address");
     }
-    let address = {};
+    let address;
     const timeslotsFilter = db.timeslots
       .filter((timeslot) => {
-        address = db.address.find(
+        address = db.addresses.find(
           (address) => address.addressID === timeslot.addressID
         );
+        console.log(address, "address");
         if (timeslot.deliveries.length < 2) {
           return isAddressInDistance(
             {
-              x: address.x,
-              y: address.y,
+              lat: address.lat,
+              lng: address.lng,
               radius: timeslot.radius,
             },
             clientAddress
@@ -30,6 +31,9 @@ exports.findAllAvailableTimeslots = (req, res) => {
         }
       })
       .map((timeslot) => {
+        address = db.addresses.find(
+          (address) => address.addressID === timeslot.addressID
+        );
         return { ...timeslot, ...address };
       });
     res.send(timeslotsFilter);

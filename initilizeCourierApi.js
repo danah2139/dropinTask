@@ -4,19 +4,19 @@ const Timeslot = require("./app/models/Timeslot.model");
 const Address = require("./app/models/Address.model");
 const db = require("./app/models/index");
 const { v4: uuidv4 } = require("uuid");
+const moment = require("moment");
 
-const loadJSON = () => {
+(async () => {
   try {
-    console.log("timeslots  load");
     const jsonString = fs.readFileSync("./courierAPI.json");
     const file = JSON.parse(jsonString);
     const timeslots = file["timeslots"];
-    const addressID = uuidv4();
-
-    timeslots.forEach((timeslot) => {
+    let date;
+    timeslots.forEach(async (timeslot) => {
+      let addressID = uuidv4();
+      date = moment(timeslot.startTime);
       if (
-        !checkIfHoliday(timeslot.startTime) &&
-        !checkIfHoliday(timeslot.endTime)
+        !(await checkIfHoliday("IL", date.year(), date.month(), date.day()))
       ) {
         db.timeslots.push(
           new Timeslot(
@@ -28,13 +28,10 @@ const loadJSON = () => {
           )
         );
         db.addresses.push(new Address(addressID, timeslot.lat, timeslot.lng));
+        // console.log(db.timeslots, "timeslots");
       }
-      console.log(db.timeslots);
     });
   } catch (error) {
     console.log(error);
   }
-};
-
-module.exports = loadJSON;
-// loadJSON();
+})();
