@@ -1,15 +1,4 @@
-const Timeslot = require("../models/Timeslot.model");
-const timeslots = [
-  {
-    x: "36.9170854",
-    y: "-76.2497906",
-    radius: 7,
-    id: "gubu165",
-    startTime: "Sat Feb 05 2022 16:21:28 GMT+0200",
-    endTime: "Sat Feb 05 2022 16:21:28 GMT+0200",
-    deliveries: [],
-  },
-];
+const db = require("../models/index");
 
 const isAddressInDistance = (address, clientAddress) => {
   let a = address.x - clientAddress.x;
@@ -20,16 +9,32 @@ const isAddressInDistance = (address, clientAddress) => {
 exports.findAllAvailableTimeslots = (req, res) => {
   try {
     const clientAddress = req.body.address;
-    const timeslotsFilter = timeslots.filter((timeslot) => {
-      return (
-        isAddressInDistance(
-          { x: timeslot.x, y: timeslot.y, radius: timeslot.radius },
-          clientAddress
-        ) && timeslot.deliveries.length < 2
-      );
-    });
+    if (!clientAddress) {
+      throw Error("must contain address");
+    }
+    let address = {};
+    const timeslotsFilter = db.timeslots
+      .filter((timeslot) => {
+        address = db.address.find(
+          (address) => address.addressID === timeslot.addressID
+        );
+        if (timeslot.deliveries.length < 2) {
+          return isAddressInDistance(
+            {
+              x: address.x,
+              y: address.y,
+              radius: timeslot.radius,
+            },
+            clientAddress
+          );
+        }
+      })
+      .map((timeslot) => {
+        return { ...timeslot, ...address };
+      });
     res.send(timeslotsFilter);
   } catch (error) {
-    res.send(error);
+    res.status(400).send(error.message);
+    return;
   }
 };

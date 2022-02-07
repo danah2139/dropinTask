@@ -1,17 +1,20 @@
 const { Address } = require("./Address.model");
-const { checkIfHoliday } = require("../services/checkIfHoliday");
 
-class Timeslot extends Address {
-  constructor(id, startTime, endTime, x, y, radius) {
-    super(x, y, radius);
-    this.id = id;
+class Timeslot {
+  constructor(
+    timeslotID,
+    startTime,
+    endTime,
+    radius,
+    addressID,
+    deliveries = []
+  ) {
+    this.timeslotID = timeslotID;
     this.startTime = startTime;
     this.endTime = endTime;
-    this.deliveries = [];
-  }
-
-  checkIfTimeslotApproval() {
-    return checkIfHoliday();
+    this.radius = radius;
+    this.addressID = addressID;
+    this.deliveries = deliveries;
   }
 }
 

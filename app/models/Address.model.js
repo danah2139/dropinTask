@@ -1,10 +1,8 @@
 class Address {
-  constructor(x, y, radius) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
+  constructor(addressID, lat, lng) {
+    this.addressID = addressID;
+    this.lat = lat;
+    this.lng = lng;
   }
-
-  // const get
 }
 module.exports = { Address };

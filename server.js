@@ -1,11 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-require('./initilizeCourierApi');
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8081",
 };
 
 app.use(cors(corsOptions));
@@ -21,20 +20,21 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to Dropit application." });
 });
 
+require("./initilizeCourierApi");
+
 const addressRouter = require("./app/routes/address.router");
-const deliveryRouter=require("./app/routes/delivery.router");
-const timeslotRouter= require("./app/routes/timeslot.router");
+const deliveryRouter = require("./app/routes/delivery.router");
+const timeslotRouter = require("./app/routes/timeslot.router");
 
-app.use('', addressRouter);
-app.use('/deliveries', deliveryRouter);
-app.use('/timeslots', timeslotRouter);
+app.use("", addressRouter);
+app.use("/deliveries", deliveryRouter);
+app.use("/timeslots", timeslotRouter);
 
+// const db = require("./app/models");
+// db.sequelize.sync();
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-
-
-

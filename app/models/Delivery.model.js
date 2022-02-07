@@ -1,10 +1,9 @@
-const { Timeslot } = require("./Timeslot.model");
-
-class Delivery extends Timeslot {
-  constructor(id, status, ...items) {
-    super(...items);
-    this.id = id;
+class Delivery {
+  constructor(deliveryID, status, timeslotID, user) {
+    this.deliveryID = deliveryID;
     this.status = status;
+    this.timeslotID = timeslotID;
+    this.user = user;
   }
 }
-module.exports = { Delivery };
+module.exports = Delivery;
